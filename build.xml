@@ -1,0 +1,119 @@
+<project name="SIAB" default="build" basedir=".">
+
+    <property name="superwaba" value="G:\SuperWabaSDK573"/>
+    <property name="litebase" value="G:\SuperWabaSDK573\Litebase"/>
+	
+    <property name="builtdir" value="build"/>
+    <property name="jardir" value="dist"/>
+    <property name="srcdir" value="src"/>
+    <property name="imagedir" value="images"/>
+	<property name="idcreator" value="SIAB"/>
+    <property name="main.class" value="SIAB"/>	
+	
+	<property name="project" 	value="${ant.project.name}" />
+	<property name="dist"	    location="${basedir}/dist" />
+    
+ 
+	<target name="compile" depends="deletefiles">
+	    <javac srcdir="${srcdir}" destdir="${builtdir}" target="1.1">
+	      <classpath>	       
+	        <pathelement location="${superwaba}\lib\superwaba.jar"/>
+	      	<pathelement location="${litebase}\lib\Litebase.jar"/>
+	      </classpath>
+	    </javac>
+	</target>
+ 
+    <!--<target name="createpdb" depends="compile,copyBmp,createjar">
+        <exec executable="java">
+            <arg line="-cp  superwaba.tools.Warp   HelloWorld ${jardir}\${ant.project.name}.jar"/>
+        </exec>
+    </target> -->
+	
+	<!-- Executando o Warp - remova do classpath o que for desnecessario -->
+	<target name="createpdb" depends="compile,copyBmp,createjar">
+		<java dir="${builtdir}" classname="superwaba.tools.Warp" fork="yes" >
+			<classpath>
+				<pathelement location="${superwaba}/lib/superwabatools.jar"/>
+				<pathelement location="${superwaba}/lib/superwaba.jar"/>
+				<pathelement location="${litebase}\lib\Litebase.jar"/>
+			</classpath>
+			<arg value="c"/>
+			<arg line="/C ${idcreator}"/>
+			<arg line="${ant.project.name}"/>
+			<!--<arg value="C:/bibiano/workspace/SIAB/dist/${ant.project.name}.jar"/>-->
+			<arg value="${dist}/${ant.project.name}.jar"/>
+		</java>
+	</target>
+    
+    <target name="copyBmp">
+	    <copy todir="${builtdir}\${imagedir}">
+	        <fileset dir="${srcdir}\${imagedir}">
+	            <include name="*.bmp"/>
+	        </fileset>
+	    </copy>
+	    <copy todir="${builtdir}">
+	        <fileset dir="${srcdir}">
+	            <include name="*.bmp"/>
+	        </fileset>
+	    </copy>
+    </target>
+ 
+<!--    <target name="createprc" depends="createpdb">
+        <exec executable="java">
+            <arg line="-cp ${superwaba}\lib\superwaba.jar;${superwaba}\utils Exegen /i SSMME /c SSME ${ant.project.name}"/>
+        </exec>
+    </target>-->
+	
+	<target name="createprc" depends="createpdb">
+		<java classname="superwaba.tools.Exegen" fork="yes" dir="${builtdir}">
+				<classpath>
+					<pathelement location="${superwaba}/lib/superwabatools.jar"/>
+					<pathelement location="${superwaba}/lib/superwaba.jar"/>
+					<pathelement location="${litebase}\lib\Litebase.jar"/>
+				</classpath>
+				<arg line="/C ${idcreator}"/>
+				<arg line="/V 1"/>
+				<arg line="/L"/>
+				<arg line="${ant.project.name} ${main.class} ${ant.project.name}"/>
+	    </java>
+	</target>
+
+    <target name="makedirs">
+        <mkdir dir="${builtdir}"/>
+        <mkdir dir="${jardir}"/>
+        <mkdir dir="${srcdir}\${imagedir}"/>
+        <mkdir dir="${builtdir}\${imagedir}"/>
+    </target>
+
+    <target name="deletefiles">
+        <delete>
+            <fileset dir="${builtdir}">
+                <include name="**"/>
+            </fileset>
+	        <fileset dir="${basedir}">
+	            <include name="${ant.project.name}.pdb"/>
+	            <include name="${ant.project.name}.prc"/>
+	        </fileset>
+	    </delete>
+    </target>
+    
+    <target name="createjar">
+	    <jar destfile="${jardir}\${ant.project.name}.jar">
+	        <fileset dir="${builtdir}">
+	            <include name="**"/>
+	        </fileset>
+	    </jar>
+	</target>
+	
+	<target name="movefiles">
+	    <move todir="${jardir}">
+	        <fileset dir="${basedir}">
+	            <include name="${ant.project.name}.pdb"/>
+	            <include name="${ant.project.name}.prc"/>
+	        </fileset>
+	    </move>
+	</target>
+
+	<target name="build" depends="makedirs,createprc,movefiles"/>
+
+</project>
