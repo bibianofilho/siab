@@ -5,7 +5,8 @@
 
 # Package Files #
 *.jar
-!Litebase.jar #Except for Litebase.jar
+!lib/*
+!lib/Litebase.jar #Except for Litebase.jar
 !SuperWaba.jar #Except for SuperWaba.jar
 !SuperWabaTools.jar #Except for SuperWabaTools.jar
 *.war
