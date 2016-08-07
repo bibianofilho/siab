@@ -1,12 +1,24 @@
-*.class
+﻿*.class
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
 *.jar
+!Litebase.jar #Except for Litebase.jar
+!SuperWaba.jar #Except for SuperWaba.jar
+!SuperWabaTools.jar #Except for SuperWabaTools.jar
 *.war
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/versao_Demo/
+/vm/
+/vm578/
+/Cópia de data/
+/CreatePdb/
+/data/
+/dataTeste/
+/build/
+/buildEnviado/
